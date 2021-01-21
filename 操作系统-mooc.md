@@ -27,41 +27,69 @@
 
 ## 2.1 概述
 
-### 2.1.1进程的描述与控制
-
 + 进程是程序在一个数据集合上的运行过程，是系统进行资源分配和调度的一个独立单位
-
 + 进程的结构：Programs（程序）、Datas（数据）、PCB（Process Control Block）
 
-+ 进程的状态
+## 2.2进程的控制
 
-  + Running（执行）：占用处理机（单处理机环境中，某一时刻仅一个进程占用处理机），进入Running一定是通过调度
+#### 2.2.1 进程的状态
 
-  + Ready（就绪）：准备执行，排队队列
+##### 2.2.1.1 五状态描述
 
-  + Blocked（阻塞）：等待某事件发生才能执行，如等待I/O完成等
++ Running（执行）：占用处理机（单处理机环境中，某一时刻仅一个进程占用处理机），进入Running一定是通过调度
 
-  + New（新状态）：进程已经创建，但未被OS接纳为可执行进程
++ Ready（就绪）：准备执行，排队队列
 
-  + Exit（退出）：因停止或取消，被OS从执行状态释放，有些系统叫僵死状态
++ Blocked（阻塞）：**等待某事件发生** 才能执行，如等待I/O完成等
 
-    状态之间的转换：
++ New（新状态）：进程已经创建，但未被OS接纳为可执行进程
 
-    Null→ New：新创建进程首先处于新状态	
++ Exit（退出）：因停止或取消，被OS从执行状态释放，有些系统叫僵死状态
 
-    New→ Ready：OS接纳新状态进程为就绪进程
+  状态之间的转换：
 
-    Ready→ Running：OS只能从就绪进程中选一个进程执行
+  Null→ New：新创建进程首先处于新状态	
 
-    Running→Exit：执行状态的进程执行完毕，或被取消，则转换为退出状态
+  New→ Ready：OS接纳新状态进程为就绪进程
 
-    Running→ Ready：分时系统中，时间片用完，或优先级高的进程到来，将终止优先级低的进程的执行
+  Ready→ Running：OS只能从就绪进程中选一个进程执行
 
-    Running→ Blocked：执行进程需要等待某事件发生通常因进程需要的系统调用不能立即完成，而阻塞
+  Running→Exit：执行状态的进程执行完毕，或被取消，则转换为退出状态
 
-    Blocked→ Ready：当阻塞进程等待的事件发生，就转换为就绪状态
+  Running→ Ready：分时系统中，时间片用完，或优先级高的进程到来，将终止优先级低的进程的执行
 
-    Ready→Etit：某些系统允许父进程在任何情况下终止其子进程。若一个父进程终止，其子孙进程都必须终止
+  Running→ Blocked：执行进程需要等待某事件发生通常因进程需要的系统调用不能立即完成，而阻塞
 
-    Blocked -> Exit：同前  
+  Blocked→ Ready：当阻塞进程等待的事件发生，就转换为就绪状态
 
+  Ready→Exit：某些系统允许父进程在任何情况下终止其子进程。若一个父进程终止，其子孙进程都必须终止
+
+  Blocked -> Exit：同前
+
+##### 2.2.1.2 七状态描述
+
++ **Suspend（挂起）**：进程从内存转到外存（如：磁盘），基于**交换技术**，也就是一个I/O过程
++ 特征如下：
+    + 不能立即执行
+    + 可能是等待某事件发生。若是：则阻塞条件**独立**于挂起条件，即使阻塞时间发生，该进程也不能执行（也就是说即使阻塞时间发生了，该进程还是挂起状态）。
+    + 使之挂起的进程为：自身、其父进程、OS
+    + 只有挂起她得进程才能使之由挂起状态转换为其他状态
+  + 四种状态组合
+    + Ready：进程在内存，准备执行
+    + Blocked：进程在内存，等待事件
+    + Ready， Suspend：进程在外存，只要调入内存即可执行
+    + Blocked， Suspend：进程在外存，等待事件
+  + 跟挂起相关的状态转换：
+    + · Blocked→ Blocked，Suspend：Os通常将阻塞进程换出，
+       以腾出内存空间
+    + Blocked，Suspend→ Ready，Suspend：当 Blocked， Suspend进程等待的事件发生时，可以将其转换为 Ready， Suspend
+    +  Read， Suspend→ Ready：Os需要调入一个进程执行时
+    + Ready→ Ready， Suspend：一般，OS挂起阻塞进程。但有时也会挂起就绪进程，释放足够的内存空问
+    + New→ Ready， Suspend（New→ Ready）：新进程创建后，可以插入到 Ready队列或 Ready， Suspend队列。若无足够的内存分配给新进程，则需要 New → Ready， Suspend
+    + Blocked， Suspend→ Blocked：当 Blocked， Suspend队列中有一个进程的阻塞事件可能会很快发生，则可将一个Blocked， Suspend进程换入内存，变Blocked
+    + Running→ Ready， Suspend：当执行进程的时间片用完时，会转换为Ready。或，一个高优先级的 Blocked，Suspend进程正好变为非阻塞状态，Os可以将执行进程转换为Ready， Suspend状态
+    + A→Exit：通常， Running→Exit。但某些OS中，父进程可以终止其子进程，使任何状态的进程都可转换为退出状态
+
+#### 2.2.1 进程的控制
+
+ 
