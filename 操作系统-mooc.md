@@ -86,10 +86,34 @@
     +  Read， Suspend→ Ready：Os需要调入一个进程执行时
     + Ready→ Ready， Suspend：一般，OS挂起阻塞进程。但有时也会挂起就绪进程，释放足够的内存空问
     + New→ Ready， Suspend（New→ Ready）：新进程创建后，可以插入到 Ready队列或 Ready， Suspend队列。若无足够的内存分配给新进程，则需要 New → Ready， Suspend
-    + Blocked， Suspend→ Blocked：当 Blocked， Suspend队列中有一个进程的阻塞事件可能会很快发生，则可将一个Blocked， Suspend进程换入内存，变Blocked
+    + Blocked， Suspend→ Blocked：当 Blocked， Suspend队列中有一个进程的  阻塞事件可能会很快发生，则可将一个Blocked， Suspend进程换入内存，变Blocked
     + Running→ Ready， Suspend：当执行进程的时间片用完时，会转换为Ready。或，一个高优先级的 Blocked，Suspend进程正好变为非阻塞状态，Os可以将执行进程转换为Ready， Suspend状态
     + A→Exit：通常， Running→Exit。但某些OS中，父进程可以终止其子进程，使任何状态的进程都可转换为退出状态
 
 #### 2.2.1 进程的控制
 
- 
++ **内存表（Memory Tables）**：
++ **I/O Tables**：
+  + 设备状态是空闲可用的还是已分配的
+  + I/O设备状态信息
+  + I/O传输的源和目的地
++ **文件表（File Tables）**：
+  + 存在的文件
+  + 文件的外存的位置
+  + 文件的状态
+  + 文件的属性
+  + 文件管理系统
++ **进程表（Process Tbale）**
+  + 进程的位置
+  + 进程的属性
+    + 进程Id
+    + 进程状态
+    + 进程在内存的位置
+  + 包含一组程序
+    + 局部和全局变量的数据位置
+    + 常量
+    + 堆栈
+  + Process control block（PCB）
+    + 属性的集合（所有进程的属性）
+    + 进程映像（Process image）
+      + 把一个进程逻辑上的所有信息合起来叫进程映像
