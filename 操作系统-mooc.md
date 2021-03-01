@@ -90,7 +90,7 @@
     + Running→ Ready， Suspend：当执行进程的时间片用完时，会转换为Ready。或，一个高优先级的 Blocked，Suspend进程正好变为非阻塞状态，Os可以将执行进程转换为Ready， Suspend状态
     + A→Exit：通常， Running→Exit。但某些OS中，父进程可以终止其子进程，使任何状态的进程都可转换为退出状态
 
-#### 2.2.1 进程的控制
+#### 2.2.2 进程的控制
 
 + **内存表（Memory Tables）**：
 + **I/O Tables**：
@@ -117,3 +117,59 @@
     + 属性的集合（所有进程的属性）
     + 进程映像（Process image）
       + 把一个进程逻辑上的所有信息合起来叫进程映像
+    + 是OS控制和管理进程时所用的基本数据结构
+    + PCB是相关进程存在于系统中的唯一标志；系统根据PCB而感知相关进程的存在
+    + PCB组成：
+      + 进程标识符（Identifiers）
+        + 进程ID
+        + 父进程ID
+        + 用户ID
+      + 处理器状态信息
+        + 用户可见寄存器（User-Visible Registers）
+        + 控制与状态寄存器（Control and Status Registers）
+          + PC寄存器（Program Counter）
+          + 条件寄存器（Condition codes ）
+          + 堆栈指针（Stack Pointers）
+          + 进程调度的状态信息（Scheduling and State Informatica）
+            + Process state
+            + Priority
+            + Scheduling-related Informatica
+            + Event
+          + 数据结构
+          + 进程间通信（Interprocess Communication）
+          + 内存管理（Memory Management）
+            + 内存是分段还是分页来划分的
+            + 资源的占用和空闲信息
+  + 操作系统内核功能（Typical Function of and OS Kernel）
+    + 资源管理功能：
+      + Process Management：进程创建和终止、调度、状态转换、同步和通信、管理PCB
+      + Memory Management：为进程分配地址空间、对换、段/页管理
+      + I/O Management：缓存管理、为进程分配I/O通道和设备
+    + 支撑功能
+      + 中断处理（Interrupt handing）
+      + 时钟管理（Timing）
+      + 原语（Primitive）:不可中断的操作
+      + 统计（Accounting）
+      + 监测（Monitoring）
+
+####  2.2.3 进程的转换
+
++ 进程**原语**：
+  + **Process Switch**：进程切换
+    + 导致进程切换的操作：
+      + Clock interrupt：process has executed for the maximum allowable time slice（时间片）
+      + I/O interrupt
+      + Memory fault（存储访问失效，比如说一个数据要去外村拿）
+      + Trap（陷阱）
+      + Supervisor call（管理程序介入）
+    + 进程切换的操作过程
+      + **Save context** of process including program counter and other registers
+      + Update the PCB of the process that is currently running
+      + Move PCB to appropriate（挪用） queue-ready，blocked
+      + Select another process for execution
+      + update the PCB of the process selected
+      + Update memory-management data structures
+      + **Restore context** of the selected process
+  + **Create and Terminate**：创建和终止
+  + **Block and Wakeup**：阻塞和唤醒
+  + **Suspend and Activate**：挂起与激活
