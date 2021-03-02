@@ -30,7 +30,7 @@
 + 进程是程序在一个数据集合上的运行过程，是系统进行资源分配和调度的一个独立单位
 + 进程的结构：Programs（程序）、Datas（数据）、PCB（Process Control Block）
 
-## 2.2进程的控制
+## 2.2进程的管理
 
 #### 2.2.1 进程的状态
 
@@ -148,28 +148,96 @@
     + 支撑功能
       + 中断处理（Interrupt handing）
       + 时钟管理（Timing）
-      + 原语（Primitive）:不可中断的操作
+      + 原语（Primitive）:最小的程序操作，不可中断的操作
       + 统计（Accounting）
       + 监测（Monitoring）
 
-####  2.2.3 进程的转换
+####  2.2.3 进程的转换 
 
 + 进程**原语**：
   + **Process Switch**：进程切换
+    
     + 导致进程切换的操作：
       + Clock interrupt：process has executed for the maximum allowable time slice（时间片）
       + I/O interrupt
-      + Memory fault（存储访问失效，比如说一个数据要去外村拿）
+      + Memory fault（存储访问失效，比如说一个数据要去外存拿）
       + Trap（陷阱）
       + Supervisor call（管理程序介入）
-    + 进程切换的操作过程
-      + **Save context** of process including program counter and other registers
-      + Update the PCB of the process that is currently running
-      + Move PCB to appropriate（挪用） queue-ready，blocked
-      + Select another process for execution
-      + update the PCB of the process selected
-      + Update memory-management data structures
-      + **Restore context** of the selected process
-  + **Create and Terminate**：创建和终止
-  + **Block and Wakeup**：阻塞和唤醒
-  + **Suspend and Activate**：挂起与激活
+      
++ 进程切换的操作过程
+    
+  1、**Save context** of process including program counter and other registers
+    
+  2、Update the PCB of the process that is currently running
+    
+  3、Move PCB to appropriate（挪用） queue-ready，blocked
+    
+  4、Select another process for execution
+    
+  5、update the PCB of the process selected
+    
+  6、Update memory-management data structures
+    
+  7、**Restore context** of the selected process
+    
++ 进程切换VS模式切换
+    
+      + Process Switch：是作用于进程之间的种操作。当分派程序收回当前进程的CPU并准备把它分派给某个就绪进程时，该操作将被引用
+  +  Mode switch：是进程内部所引用的一种操作。当进程映像所包含的程序引用核心子系统所提供的系统调用时，该操作将被引用
+    
++ **Create and Terminate**：创建和终止 
+  
+  + 进程创建步骤
+  
+      1、为进程分配一个唯一标识号ID：主进程表中增加一个新的表项
+      2、为进程分配空间：用户地址空间、用户栈空间、PCB空问。若共享已有空间，则应建立相应的链接。
+      3、初始化PCB：进程标识、处理机状态信息、进程状态
+      4、建立链接：若调度队列是链表，则将新进程插入到就绪或（就绪，挂起）链表
+    5、建立或扩展其他数据结构
+  
+  + 进程终止的步骤
+  
+      1、根据被终止进程的标识符ID，找到其PCB，读出该进程的状态；
+      2、若该进程为执行状态，则终止其执行，调度新进程执行；
+      3、若该进程有子孙进程，则立即终止其所有子孙进程
+      4、将该进程的全部资源，或归还给其父进程，或归还给系统
+    5、.将被终止进程（的PCB）从所在的队列中移出，等待其它程序来搜集信息
+  
++ **Block and Wakeup**：阻塞和唤醒
+  
+    + 阻塞原语block（）
+      + 概述：当出现阻塞事件，进程调用阻塞原语将自己阻塞。状态变为“阻塞状态”，并进入相应事件的阻塞队列
+    + 唤醒原语wakeup（）
+    + 概述：当阻塞进程期待的事件发生，有关进程调用唤醒原语，将等待该事件的进程唤醒。状态变为Ready，插入就绪队列
+  
++ **Suspend and Activate**：挂起与激活（基于交换技术）
+  
+  + 挂起原语 suspend
+  
+    当出现挂起事件，系统利用挂起原语将指定进程或阻塞状态进程挂起。进程从内存换到外存，状态改变： Ready→Ready， Suspend；Blocked→ Blocked， Suspend，插入相应队列
+  
+    + 激活原语 active
+       当激活事件发生，系统利用激活原语将指定进程激活。进程从外存换入到内存，状态改变：Ready， Suspend → Ready；Blocked， Suspend → Blocked，插入相应队列
+
+####  2.2.4 线程 
+
+ 降低多进程切换和调度开销、提高并发度
+
+进程是资源分配单位，线程是调度单位，
+
+  ##### 2.2.4.1 线程描述
+
++ An execution state(running, ready, etc.)
++ Saved thread context when not running
++ Has an execution stack
++ Some per-thread static storage for local variables
++ Access to the memory and resources of its process。all threads of a process share this
+
+  ##### 2.2.4.2 线程的好处
+
++ Takes less time to create a new thread than a process.
++ Less time to terminate a thread than a process
++ Less time to switch between two threads within the same process
++ Since threads within the same process share memory and files. they can communicate with each other without invoking the kernel.
++ Suspending a process involves suspending all threads of the process since all threads share the same address space
++ Termination of a process, terminates all threads within the process
