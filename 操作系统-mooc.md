@@ -163,28 +163,29 @@
       + Memory fault（存储访问失效，比如说一个数据要去外存拿）
       + Trap（陷阱）
       + Supervisor call（管理程序介入）
-      
+  
 + 进程切换的操作过程
-    
+  
   1、**Save context** of process including program counter and other registers
-    
+  
   2、Update the PCB of the process that is currently running
-    
+  
   3、Move PCB to appropriate（挪用） queue-ready，blocked
-    
+  
   4、Select another process for execution
-    
+  
   5、update the PCB of the process selected
-    
+  
   6、Update memory-management data structures
-    
+  
   7、**Restore context** of the selected process
-    
+  
 + 进程切换VS模式切换
-    
+  
       + Process Switch：是作用于进程之间的种操作。当分派程序收回当前进程的CPU并准备把它分派给某个就绪进程时，该操作将被引用
+  
   +  Mode switch：是进程内部所引用的一种操作。当进程映像所包含的程序引用核心子系统所提供的系统调用时，该操作将被引用
-    
+  
 + **Create and Terminate**：创建和终止 
   
   + 进程创建步骤
@@ -225,7 +226,7 @@
 
 进程是资源分配单位，线程是调度单位，
 
-  ##### 2.2.4.1 线程描述
+##### 2.2.4.1 线程描述
 
 + An execution state(running, ready, etc.)
 + Saved thread context when not running
@@ -233,11 +234,79 @@
 + Some per-thread static storage for local variables
 + Access to the memory and resources of its process。all threads of a process share this
 
-  ##### 2.2.4.2 线程的好处
-
+##### 2.2.4.2 线程的好处
 + Takes less time to create a new thread than a process.
 + Less time to terminate a thread than a process
 + Less time to switch between two threads within the same process
 + Since threads within the same process share memory and files. they can communicate with each other without invoking the kernel.
 + Suspending a process involves suspending all threads of the process since all threads share the same address space
 + Termination of a process, terminates all threads within the process
+
+##### 2.2.4.3 线程的状态
+
++ Key states for a thread:**Running,Ready,Blocked**
++ Operations associated with a change in thread state
+  + Spawn（派生），Spawn another thread
+  + Block
+  + Unblock
+
+2.2.4.4 线程的等级
+
++ User-Level Threads
+  + All thread management is done by the application.
+  + The kernel is not aware of the existence of threads
+  + 描述此类线程的数据结构以及控制此类线程的原语在核外子系统中实现 
++ Kernel-Level Threads
+  + W2K， Linux， and os/2 are examples of
+     this approach.
+  + Kernel maintains context information for he process and the threads
+  + Scheduling is done on a thread basis
+  + 描述此类线程的数据结构以及控制此类线程的原语在核心子系统中实现
++ 上面两种组合  
+## 2.3 进程调度
+
+重点：
+
+Explain what' s Response Time（响应时间），
+ Turnaround time（周转时间）， Deadlines（截止时
+ 间）， Through（吞吐量）
+ ·理解进程调度的目标、类型、原则
+ 理解 Decision Mode： Nonpreemptive非剥夺）
+ Preemptive（剥夺）
+ ·研究经典进程调度算法：FCFS， Round Robin（轮转）， Shortest Process Next， Shortest Remaining
+ Time， Highest Response Ratio Next， Feedback
+ ·理解 Real-Time Systems及类型
+ ·理解掌握：Real- Time scheduling， Deadline
+ Scheduling， Rate Monotonic Scheduling（速度单调）2
+
+### 2.3.1 调度类型
+
++ 按OS的类型划分：
+   批处理调度、分时调度、实时调度、多处理机调度
++ 按调度的层次划分
+  + long-term scheduling（长程调度）
+    + 又称为高级调度，作业调度，它为被调度作业或用户程序创建进程、分配必要的系统资源，并将新创建的进程插入就绪队列，等待Short-term scheduling
+    + 长程调度相关的问题
+      + Determines which programs are adImitted to the system for processing
+        这取决于调度算法，如FCFS、短作业优先、基于优先权、响应比高者优先等调度算法
+      + How mam programs are admitted to the system
+        Controls the degree of multiprogramming
+      + When does the scheduler be invoked？
+        + Each time a job terminates 
+        + Processor is idle exceeds a certain threshold
+  + Medium-term scheduling（中程调度）
+    + 又称为中级调度，它调度换出到磁盘的进程进入内存，准备执行
+    + 中程调度配合对换技术使用其目的是为了提高内存的利用率和系统吞吐量。
+    + 在多道程序度允许的情况下，从外存选择一个挂起状态的进程调度到内存（换入）
+  + Short-term scheduling（短程调度）
+    + ·又称为进程调度、低级调度，调度内存中的就
+       绪进程执行
+    + Known as the dispatcher：决定就绪队列中的哪个进程将获得处理机
+    + Executes most frequently
+    + Invoked when an event occurs
+      + Clock interrupts
+      + I/O interrupts
+      + Operating system calls
+      + Signalst（信号）
+
+![mark](http://img.chenxinzouzou.cn/blog/20210304/124037176.png)
