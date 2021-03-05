@@ -310,3 +310,27 @@ Explain what' s Response Time（响应时间），
       + Signalst（信号）
 
 ![mark](http://img.chenxinzouzou.cn/blog/20210304/124037176.png)
+
+### 2.3.2 调度算法
+
+调度的方式：
+
++ Nonpreemptive(非剥夺方式）
+  + Once a process is in the running state, it will continue until it terminates or blocks itself for I/0
+  + 主要用于批处理系统。
+
++ Preemptive(剥夺方式）
+  + Currently running process may be interrupted and moved to the ready state by the operating system
+
+调度算法：
+
++ FCFS(First-Come-First-Served，先来先服务)
+
+  + 描述：
+    + Each process joins the Ready queue.
+    + When the current process ceases to execute, the oldest process in the Ready queue is selected
+  + 缺点
+    +  A short process may have to wait a very long time before it can execute
+  + Favors CPU-bound processes
+      + I/0 processes have to wait until CPU-bound process completes
++ dd
