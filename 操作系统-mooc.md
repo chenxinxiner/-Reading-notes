@@ -334,3 +334,20 @@ Explain what' s Response Time（响应时间），
   + Favors CPU-bound processes
       + I/0 processes have to wait until CPU-bound process completes
 + dd
+
+### 2.3.3 进程的并发控制
+
+互斥与同步
+
+死锁和饥饿
+
+##### 2.3.3.1 学习目标
+
++ Explain what's Concurrency, Synchronization, Mutual exclusion，Deadlock, Starvation,（饥饿）， Critical sections（临界区 ，代码的结合，临界区的资源只能互斥使用） 
++ 掌握 Requirements for Mutual Exclusion
++ 掌握Approaches of Mutual Exclusion（互斥的解决方法）: Software Approaches & Hardware Support-Semaphores（硬件的方法：信号量）, Monitors（管程）, Message Passing（消息传递）
++ 区别掌握 Types and meanings of Semaphores（信号量的类型和含义）
++ 掌握3个经典问题的解决方法: Producer/Consumer Problem、Readers/Writers Problem, Dining Philosophers Problem（哲学家进餐问题）
++ 理解 Conditions for Deadlock、 Deadlock Prevention（死锁预防）、 Deadlock Avoidance（死锁避免，银行家算法）, Deadlock Detection. Strategies once Deadlock Detected, Banker's Algorithm (Safe State 1s. Unsafe State、银行家算法）
+
+##### 2.3.3.1 学习目标
