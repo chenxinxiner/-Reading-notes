@@ -350,4 +350,50 @@ Explain what' s Response Time（响应时间），
 + 掌握3个经典问题的解决方法: Producer/Consumer Problem、Readers/Writers Problem, Dining Philosophers Problem（哲学家进餐问题）
 + 理解 Conditions for Deadlock、 Deadlock Prevention（死锁预防）、 Deadlock Avoidance（死锁避免，银行家算法）, Deadlock Detection. Strategies once Deadlock Detected, Banker's Algorithm (Safe State 1s. Unsafe State、银行家算法）
 
-##### 2.3.3.1 学习目标
+##### 2.3.3.2 同步和互斥概述
+
++ Competition Among Processes for Resources
+
+  + Mutual Exclusion(互斥)
+    + Critical sections(临界区)
+      + Only one program at a time is allowed in its
+        critical section
+      + Eg. Only one process at a time is allowed to send command to the printer (critical resource)
+  + Deadlock(死锁)
+  + Starvation（饥饿）
++ Cooperation Among Processes by Communication
+     + Messages are passed
+       + Mutual exclusion is not a control requirement
+     + Possible to have deadlock
+       + Each process waiting for a message from the other process.
+     + Possible to have starvation
+       + Two processes sending message to each other while another process waits for a message.
+
++ Requirements for Mutual Exclusion（互斥的条件）
+  + Only one process at a time is allowed in the critical section for a resource
+  + A process that halts in its non- critical section must do so without interfering with other processes.
+  + No deadlock or starvation 
+  + A process must not be delayed access to a critical section when there is no other process using It.
+  + No assumptions are made about relative process speeds or number of processes.
+  + A process remains inside its critical section for a finite time onl
+  + 十六字决
+    + 空闲让进、忙则等待、有限等待、让权等待（不能拿着临界区的资源又去等待其他资源）
+
+##### 2.3.3.3 解决互斥的方法
+
++ Software Approaches
+  + Memory access level
+  + Access to the same location in main memory are serialized by some sort of memory arbiter
+  + Dekker's algorithm
+  + Peterson's Algorithm
++ Hardware Support
+  + Interrupt Disabling（屏蔽中断）
+    + A process runs until it invokes an operating-system service or until it is interrupted
+    + Disabling interrupts guarantees mutual exclusion 
+    + The price of this approach is high.
+    + Multiprocessing
+      + Disabling interrupts on one processor will not guarantee mutual exclusion
+  + 专用机器指令 
++ **Semaphores（信号量 重点）**
++ Monitors（管程）
++ Message Passing
