@@ -377,7 +377,7 @@ Explain what' s Response Time（响应时间），
   + No assumptions are made about relative process speeds or number of processes.
   + A process remains inside its critical section for a finite time onl
   + 十六字决
-    + 空闲让进、忙则等待、有限等待、让权等待（不能拿着临界区的资源又去等待其他资源）
+    + 空闲让进、忙则等待、有限等待、让权等待（不能拿着临界区的资源又去等待其他资源，等待其他资源要释放临界区资源）
 
 ##### 2.3.3.3 解决互斥的方法
 
@@ -386,6 +386,7 @@ Explain what' s Response Time（响应时间），
   + Access to the same location in main memory are serialized by some sort of memory arbiter
   + Dekker's algorithm
   + Peterson's Algorithm
+  
 + Hardware Support
   + Interrupt Disabling（屏蔽中断）
     + A process runs until it invokes an operating-system service or until it is interrupted
@@ -393,7 +394,58 @@ Explain what' s Response Time（响应时间），
     + The price of this approach is high.
     + Multiprocessing
       + Disabling interrupts on one processor will not guarantee mutual exclusion
-  + 专用机器指令 
+  + 专用机器指令
+    + **指令不能被中断（原语）**
+    + testset
+      + 比较耗资源、可以实现临界区资源互斥使用
+      + 一个参数进来，判断是否是1，是1的话退出 返回false，不是1则设置为1,代表拿到了临界区资源，然后返回true。
+      + 应用：进入临界区前的判断使用testset
+    + Exchange
+      + ![mark](http://img.chenxinzouzou.cn/blog/20210316/124851698.jpg)
+    + Advantages（优点）
+      + Applicable to any number of processes on either a single processor or multiple proeessors sharing main memory
+      + It is simple and therefore easy to verify
+      + It can be used to support multiple critical sections（支持多临界区，对多个临界区设置多个变量）
+    + Disadvantages（缺点）
+      + Busy-waiting is employed
+      +  Starnation is possible.
+        + when a process leaves a critical section and more than one process is waiting
+      + Deadlock is possible
+        + If a low priority process has the critical region and a higher priority process needs, the higher priority process will obtain the processor to wait for the critical region（如果一个低优先级的进程正在使用临界资源，来了一个高优先级的进程需要访问临界区资源，占用着CPU，低优先级等待CPU调度）
+  
 + **Semaphores（信号量 重点）**
+
+  + 概述
+
+    + Special variable called a semaphore is used for signaling
+    + If a process is waiting for a signal, it is blocked until that signal is sent
+    + **Wait and Signal operations cannot be interrupted（原语，类似于机器指令）**
+    + **Queue** is used to hold processes waiting on the semaphore
+    + Semaphore is a variable that has an integer value
+      + May be initialized to a nonnegative number
+      + Wait and Signal are primitives (**atomic**,cannot be interrupted and each routine can be treated as an indivisible step)
+    + Wait operation decrements（递减） the semaphore value
+      + wait（s）：s-1
+      + wait操作：申请资源且可能阻塞自己（s<0）
+    + Signal operation increments semaphore value
+      + signal（s）： s+1
+      + signal操作：释放资原并哽醒阻塞进程（s ≤ 0）
+
+  + 信号量的类型
+
+    + **General Semaphore通用信号量）**
+      + 通用信号量是记录型，其中一个域为整型，另个域为队列，其元素为等待该信号量的阻塞进程（FIFO）
+    + Binary Semaphore（二进制信号量、不要求）
+
+  + **General Semaphore通用信号量）**
+
+    
+
+    + **信号量的伪代码**![mark](http://img.chenxinzouzou.cn/blog/20210316/131428904.jpg)
+
+    + **信号量的用法**
+
+      ![mark](http://img.chenxinzouzou.cn/blog/20210316/131903479.jpg)
+
 + Monitors（管程）
 + Message Passing
