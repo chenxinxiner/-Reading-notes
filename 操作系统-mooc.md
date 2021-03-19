@@ -335,13 +335,13 @@ Explain what' s Response Time（响应时间），
       + I/0 processes have to wait until CPU-bound process completes
 + dd
 
-### 2.3.3 进程的并发控制
+## 2.4 进程的并发控制
 
 互斥与同步
 
 死锁和饥饿
 
-##### 2.3.3.1 学习目标
+#### 2.4.1 学习目标
 
 + Explain what's Concurrency, Synchronization, Mutual exclusion，Deadlock, Starvation,（饥饿）， Critical sections（临界区 ，代码的结合，临界区的资源只能互斥使用） 
 + 掌握 Requirements for Mutual Exclusion
@@ -350,7 +350,7 @@ Explain what' s Response Time（响应时间），
 + 掌握3个经典问题的解决方法: Producer/Consumer Problem、Readers/Writers Problem, Dining Philosophers Problem（哲学家进餐问题）
 + 理解 Conditions for Deadlock、 Deadlock Prevention（死锁预防）、 Deadlock Avoidance（死锁避免，银行家算法）, Deadlock Detection. Strategies once Deadlock Detected, Banker's Algorithm (Safe State 1s. Unsafe State、银行家算法）
 
-##### 2.3.3.2 同步和互斥概述
+#### 2.4.2 同步和互斥概述
 
 + Competition Among Processes for Resources
 
@@ -379,13 +379,14 @@ Explain what' s Response Time（响应时间），
   + 十六字决
     + 空闲让进、忙则等待、有限等待、让权等待（不能拿着临界区的资源又去等待其他资源，等待其他资源要释放临界区资源）
 
-##### 2.3.3.3 解决互斥的方法
+#### 2.4.4 解决互斥的方法
 
 + Software Approaches
   + Memory access level
   + Access to the same location in main memory are serialized by some sort of memory arbiter
   + Dekker's algorithm
   + Peterson's Algorithm
+  + 全局变量的方式，但是当一个进程访问到变量后被中断就会出现多个进程访问同一个临界区资源的问题
   
 + Hardware Support
   + Interrupt Disabling（屏蔽中断）
@@ -407,7 +408,7 @@ Explain what' s Response Time（响应时间），
       + It is simple and therefore easy to verify
       + It can be used to support multiple critical sections（支持多临界区，对多个临界区设置多个变量）
     + Disadvantages（缺点）
-      + Busy-waiting is employed
+      + Busy-waiting is employed（忙等，一直循环检测）
       +  Starnation is possible.
         + when a process leaves a critical section and more than one process is waiting
       + Deadlock is possible
@@ -431,7 +432,7 @@ Explain what' s Response Time（响应时间），
       + signal（s）： s+1
       + signal操作：释放资原并哽醒阻塞进程（s ≤ 0）
 
-  + 信号量的类型
+  + 信号量的种类
 
     + **General Semaphore通用信号量）**
       + 通用信号量是记录型，其中一个域为整型，另个域为队列，其元素为等待该信号量的阻塞进程（FIFO）
@@ -439,13 +440,38 @@ Explain what' s Response Time（响应时间），
 
   + **General Semaphore通用信号量）**
 
-    
-
     + **信号量的伪代码**![mark](http://img.chenxinzouzou.cn/blog/20210316/131428904.jpg)
 
     + **信号量的用法**
 
       ![mark](http://img.chenxinzouzou.cn/blog/20210316/131903479.jpg)
 
+    + 信号量分为互斥信号量和资源信号量
+
+      +   互斥信号量用于申请或释放资源的使用权，常初始化为1
+      + 资源信号量用于申请或归还资源，可以初始化为大于1的正整数，表示系统中某资源的可用个数
+      + wait操作用于申请资源（或使用权），进程执行wait原语时，可能会阻塞自己
+      + signal操作用于释放资源（或归还资源使用权），进程执行 signal原语时，有责任唤醒某个阻塞进程。
+      + s. count的意义为：s.count>0：表示还可执行wait（s）而不会阻塞的进程数（可用资源数）；s count<0：表示 s.queue队列中阻塞进程的个数（被阻塞进程数）
+
+  + 信号量使用通用模板 ：进入临界区前wait（s）-> 进入临界区 ->出临界区的时候single（s）-> 出临界区
+
+  + 经典问题，Producer/Consumer Problem
+
+    + 生产者消费者流程图
+
+    ![mark](http://img.chenxinzouzou.cn/blog/20210319/124710216.jpg)
+
+    + 伪代码实现：
+
+    ![mark](http://img.chenxinzouzou.cn/blog/20210319/124619303.jpg)
+
+    + 注意
+      +  进程应该先申请资源信号量，再申请互斥信号量，顺序不能 颠倒。 
+      + 对任何信号量的wait与signal操作必须配对。同一进程中的多 对wait与signal语句只能嵌套，不能交叉。
+      +  对同一个信号量的wait与signal可以不在同一个进程中
+      + wait与signal语句不能颠倒顺序，wait语句一定先于signal语句。
+
 + Monitors（管程）
 + Message Passing
+
