@@ -471,7 +471,81 @@ Explain what' s Response Time（响应时间），
       + 对任何信号量的wait与signal操作必须配对。同一进程中的多 对wait与signal语句只能嵌套，不能交叉。
       +  对同一个信号量的wait与signal可以不在同一个进程中
       + wait与signal语句不能颠倒顺序，wait语句一定先于signal语句。
+    
+  + 经典问题，Readers/Writers Problem
+
+    + 读优先
+
+    ![mark](http://img.chenxinzouzou.cn/blog/20210323/130650774.jpg)
+
+    
+
+    + 写优先（非常复杂）
 
 + Monitors（管程）
 + Message Passing
+
+#### 2.4.5 死锁（Deadlock）
+
++ 死锁的概念：**Permanent blocking of a set of processes that either compete for system resources or communicate with each other**（因为竞争资源或是因为相互通信而造成的一组进程永久阻塞状态）
+
+  + No efficient solution
+  + 存在单进程死锁的情况
+  + 资源分类
+    + Used by one process at a time and not depleted (耗尽)by that use.
+    + Created (produced) and destroyed (consumed) by a  process
+
++ 死锁的条件
+
+  + **Mutual exclusion**(互斥)
+
+    – **only one process may use a resource at a time.**
+
+  + **Hold-and-wait**(保持并等待)
+
+    – A process may hold allocated resources while awaiting  assignment of other resources.
+
+  + **No preemption**(不剥夺)
+
+    – **No resource can be forcibly removed from a process holding it.**
+
+  + **Circular wait**(环路等待)
+
+    – **A closed chain of processes exists, such that each process holds at least** **one resource needed by the next process in the chain.**
+
+    有环路必有死锁
+
++ 预防死锁（Deadlock Prevention）
+
+  + **互斥** **： 是某些系统资源固有的属性，不能禁止** 
+
+  + 禁止“保持并等待”条件：要求进程一次性地申请其所需的全部资源。若系统中**
+
+    **没有足够的资源可分配给它，则进程阻塞。*
+
+  + 禁止“不剥夺”条件：①若一个进程占用了某些系统资源，又申请新的资源，则**
+
+    **不能立即分配给它。必须让它首先释放出已占用资源，然后再重新申请；②若一**
+
+    **个进程申请的资源被另一个进程占有，OS可以剥夺低优先权进程的资源分配给高**
+
+    **优先权的进程（要求此类可剥夺资源的状态易于保存和恢复，否则不能剥夺）**
+
+  + 直接方法，禁止条件4（环路等待）的发生即禁止“环路等待条件：可以将系统的所有资源按类型不同进行线性排队，并赋予不同的序号。进程对某类资源的申请只能按照序号递增的方式进行。
+
+  + 低效不可行
+
++ 避免死锁（Deadlock Avoidance  ）
+
+  + 资源需求矩阵来求出一个序列，来判断当前系统状态是否是安全的
+
+  + 指系统能按某种顺序如<1，P2，…，Pn>（称<P1，P2，…，Pn>为安全序列），来为每个进程分配其所需资源，直至最大需求，使每个进程都可顺序完成，则称系统处于safe state.
+
+    •若系统不存在这样一个安全序列，则称系统处于unsafe state
+
+    ![mark](http://img.chenxinzouzou.cn/blog/20210401/125935146.jpg)
+
+  + + 并非所有不安全状态都是死锁状态
+    + 当系统进入不安全状态后，便可能进入死锁状态
+    + 只要系统处于安全状态，则可避免进入死锁状态。
 
